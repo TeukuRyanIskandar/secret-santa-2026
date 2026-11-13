@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>Secret Santa 2026</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='13' y='2' width='6' height='5' rx='1' fill='%23B08835'/%3E%3Ccircle cx='16' cy='19' r='12' fill='%23A3313C'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..600;1,6..96,400..600&family=Mulish:wght@400;600;700&display=swap">
+<style>
+/* Layout: pine header band like the event proposal, tab strip, one centred column of task cards per view. */
+:root{
+  color-scheme:light;
+  --bg:#F8F3EA; --surface:#FFFDF8; --ink:#1E2A23; --muted:#6A7166; --line:#E5DAC6;
+  --pine:#173A2B; --pine-ink:#F3EDDD; --pine-muted:#B9C4B4;
+  --gold:#B08835; --gold-soft:#F4EAD3; --berry:#A3313C; --berry-soft:#F7E5E3;
+  --ok:#2E6A48; --ok-soft:#E2EEE5;
+  --display:"Bodoni Moda","Didot","Bodoni 72",Georgia,serif;
+  --body:"Mulish","Avenir Next","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#0E1C15; --surface:#15281E; --ink:#ECE6D6; --muted:#A2A99B; --line:#2A3E32;
+  --pine:#1B4231; --pine-ink:#F3EDDD; --pine-muted:#AEBBA8;
+  --gold:#D8B467; --gold-soft:#2F2915; --berry:#E8858B; --berry-soft:#3A1D21;
+  --ok:#83C8A0; --ok-soft:#183325; color-scheme:dark }}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;padding-bottom:env(safe-area-inset-bottom,0px)}
+[hidden]{display:none!important}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);font-weight:500;text-wrap:balance;margin:0;line-height:1.15}
+p{margin:0}
+.eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+.muted{color:var(--muted)}
+button{font:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+.band{background:var(--pine);color:var(--pine-ink);padding-top:env(safe-area-inset-top,0px)}
+.band .wrap{padding-block:28px 24px;display:flex;flex-direction:column;gap:14px}
+.band .eyebrow{color:var(--gold)}
+.band h1{font-size:clamp(34px,7vw,52px)}
+.band h1 em{color:var(--gold);font-style:italic}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:13px;color:var(--pine-muted)}
+.facts b{color:var(--pine-ink);font-weight:600}
+.hello{color:var(--pine-ink);font-weight:600}
+
+.tabs{display:flex;gap:4px;overflow-x:auto;padding-block:14px 0;border-bottom:1px solid var(--line);scrollbar-width:none}
+.tab{border:0;background:none;color:var(--muted);padding:10px 14px 12px;cursor:pointer;font-weight:600;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--berry)}
+.tab .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--berry);margin-left:6px;vertical-align:middle}
+
+main.wrap{padding-block:24px 64px;display:flex;flex-direction:column;gap:20px}
+.view{display:flex;flex-direction:column;gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card.feature{background:var(--pine);border-color:var(--pine);color:var(--pine-ink)}
+.card.feature .muted{color:var(--pine-muted)}
+.card h2{font-size:26px}
+.card h3{font-size:20px}
+.notice{border-radius:12px;padding:14px 16px;background:var(--gold-soft);border:1px solid var(--line);font-size:14px}
+.notice.err{background:var(--berry-soft)}
+
+label{font-weight:700;font-size:13px;display:block;margin-bottom:6px}
+textarea,input[type=text],input[type=password]{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;background:var(--bg);color:var(--ink)}
+textarea{min-height:68px;resize:vertical}
+textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+.field{display:flex;gap:12px;align-items:flex-start}
+.field .num{flex:none;width:28px;height:28px;border-radius:50%;background:var(--berry);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;margin-top:26px}
+.field>div{flex:1;min-width:0}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:1px solid transparent;border-radius:999px;padding:9px 18px;font-weight:700;cursor:pointer;background:var(--berry);color:#fff}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.gold{background:var(--gold);color:#1E1A10}
+.btn.small{padding:6px 12px;font-size:13px}
+.btn.link{background:none;border:0;color:var(--berry);padding:6px 4px;font-size:13px}
+.status{font-size:13px;color:var(--muted)}
+.status.ok{color:var(--ok)}
+.status.err{color:var(--berry)}
+.confirm{border:1px dashed var(--gold);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--gold-soft)}
+
+.receiver{display:flex;gap:16px;align-items:center}
+.avatar{width:40px;height:40px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff;letter-spacing:.02em}
+.receiver .avatar{width:64px;height:64px;font-size:22px;border:2px solid var(--gold)}
+.receiver .name{font-family:var(--display);font-size:clamp(28px,6vw,40px);font-style:italic;line-height:1.1;overflow-wrap:anywhere}
+.hints{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;counter-reset:h}
+.hints li{counter-increment:h;display:flex;gap:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:12px 14px;overflow-wrap:anywhere}
+.hints li::before{content:counter(h);font-family:var(--display);font-style:italic;color:var(--gold);font-size:20px;line-height:1.2}
+.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;background:var(--gold-soft);color:var(--ink);border:1px solid var(--line);white-space:nowrap}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.chip.warn{background:var(--berry-soft);color:var(--berry)}
+
+.progress{height:10px;border-radius:99px;background:var(--line);overflow:hidden}
+.progress>i{display:block;height:100%;background:var(--ok);border-radius:99px;transition:width .4s}
+.big{font-family:var(--display);font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
+.people{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.person{display:flex;gap:12px;align-items:flex-start;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);min-width:0}
+.person.me{border-color:var(--gold)}
+.person .info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.person .nm{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.person .acts{display:flex;flex-wrap:wrap;gap:6px}
+.orn{position:relative;width:26px;height:26px;border-radius:50%;flex:none;border:2px solid var(--line);background:var(--surface);margin-top:6px}
+.orn::before{content:"";position:absolute;left:50%;top:-6px;width:8px;height:5px;transform:translateX(-50%);background:var(--gold);border-radius:2px}
+.orn.approved{background:var(--gold);border-color:var(--gold)}
+.orn.found{background:var(--ok);border-color:var(--ok)}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;gap:8px;align-items:center}
+.legend .orn{width:14px;height:14px;margin-top:3px}
+.legend .orn::before{top:-4px;width:5px;height:3px}
+
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.list li{display:flex;gap:10px 12px;align-items:center;padding:12px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.list li:first-child{border-top:0}
+.list .avatar{width:32px;height:32px;font-size:12px}
+.list .nm{flex:1;min-width:120px;font-weight:600;overflow-wrap:anywhere}
+.list .acts{display:flex;flex-wrap:wrap;gap:4px;flex-basis:100%;padding-left:44px}
+.spot{flex-basis:100%;padding:10px 12px;border-radius:10px;background:var(--gold-soft);font-size:14px;overflow-wrap:anywhere}
+.linkbox{flex-basis:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;padding:8px 10px;border-radius:8px;background:var(--bg);border:1px solid var(--line);overflow-wrap:anywhere;user-select:all}
+.pairs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.pairs li{overflow-wrap:anywhere}
+.pairs em{font-family:var(--display);color:var(--gold)}
+.empty{text-align:center;padding:28px 18px;color:var(--muted);display:flex;flex-direction:column;gap:8px;align-items:center}
+.empty h3{color:var(--ink)}
+@media (prefers-reduced-motion:reduce){.progress>i{transition:none}}
+</style>
+</head>
+<body>
+
+<header class="band">
+  <div class="wrap">
+    <span class="eyebrow">Christmas Event 2026 · Hunt</span>
+    <h1>Secret <em>Santa</em></h1>
+    <div class="facts">
+      <span>Event <b>Wed, 23 Dec 2026</b></span>
+      <span>Hints due <b>Sun, 15 Nov</b></span>
+      <span>Gift budget <b>RM50 and above</b></span>
+      <span id="countdown"></span>
+    </div>
+    <span class="hello" id="hello" hidden></span>
+  </div>
+</header>
+
+<nav class="tabs wrap" role="tablist" id="tabs" hidden>
+  <button class="tab" role="tab" data-view="wishlist" id="tab-wishlist">My hints</button>
+  <button class="tab" role="tab" data-view="santa" id="tab-santa">My Santa task</button>
+  <button class="tab" role="tab" data-view="hunt" id="tab-hunt">Hunt day</button>
+  <button class="tab" role="tab" data-view="organizer" id="tab-organizer" hidden>Organizer</button>
+</nav>
+
+<main class="wrap">
+  <div id="notice" class="notice" hidden></div>
+
+  <!-- NO LINK / SETUP -->
+  <section class="view" id="v-gate" hidden>
+    <div class="card" id="gate-card">
+      <div class="empty">
+        <h3>Open your personal link</h3>
+        <p>Every teammate gets their own link from the organizer. Open it on this device once and the app remembers you.</p>
+      </div>
+    </div>
+    <div class="card" id="join-card" hidden>
+      <div><span class="eyebrow">Secret Santa 2026</span><h2>Join the gift exchange</h2></div>
+      <p class="muted">Enter your name as your teammates know it. You'll get your own private link, and this device will remember you.</p>
+      <form id="join-form" class="view" novalidate>
+        <div><label for="join-name">Your name</label><input type="text" id="join-name" maxlength="60" autocomplete="name" placeholder="e.g. Mei Ling"></div>
+        <div class="row"><button class="btn" type="submit">Join</button><span class="status" id="join-status"></span></div>
+      </form>
+    </div>
+    <div class="card" id="setup-card" hidden>
+      <div><span class="eyebrow">First-time setup</span><h2>Create the organizer</h2></div>
+      <p class="muted">Run this once. It makes you the first organizer and gives you your personal link.</p>
+      <form id="setup-form" class="view" novalidate>
+        <div><label for="setup-name">Your name</label><input type="text" id="setup-name" maxlength="60" autocomplete="name" placeholder="e.g. Ryan"></div>
+        <div><label for="setup-key">Setup key</label><input type="password" id="setup-key" autocomplete="off"></div>
+        <div class="row"><button class="btn" type="submit">Create organizer</button><span class="status" id="setup-status"></span></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- WISHLIST -->
+  <section class="view" id="v-wishlist" hidden>
+    <div class="card">
+      <div>
+        <span class="eyebrow">Before the event</span>
+        <h2>Three hints for your Santa</h2>
+      </div>
+      <p class="muted">Write three clues about what you'd like. Your Secret Santa will pick a gift from them. Saving your hints puts you in the draw. Only your Santa will see them. Names are drawn after <b>15 Nov 2026</b>.</p>
+      <form id="wish-form" class="view" novalidate>
+        <div class="field"><span class="num">1</span><div><label for="hint1">Hint 1</label><textarea id="hint1" maxlength="280" placeholder="e.g. I drink a lot of tea at my desk"></textarea></div></div>
+        <div class="field"><span class="num">2</span><div><label for="hint2">Hint 2</label><textarea id="hint2" maxlength="280" placeholder="e.g. I've been wanting to try film photography"></textarea></div></div>
+        <div class="field"><span class="num">3</span><div><label for="hint3">Hint 3</label><textarea id="hint3" maxlength="280" placeholder="e.g. Size M if it's something to wear"></textarea></div></div>
+        <div class="row">
+          <button class="btn" type="submit" id="save-hints">Save my hints</button>
+          <span class="status" id="wish-status"></span>
+        </div>
+      </form>
+    </div>
+    <p class="status" id="joined-count"></p>
+  </section>
+
+  <!-- SANTA -->
+  <section class="view" id="v-santa" hidden>
+    <div id="santa-body" class="view"></div>
+  </section>
+
+  <!-- HUNT -->
+  <section class="view" id="v-hunt" hidden>
+    <div class="card">
+      <span class="eyebrow">On the day · 6:00 PM</span>
+      <div class="row" style="justify-content:space-between;align-items:flex-end">
+        <div><span class="big" id="found-count">0</span> <span class="muted" id="found-of">of 0 gifts found</span></div>
+        <span class="status" id="dinner-line"></span>
+      </div>
+      <div class="progress" aria-hidden="true"><i id="found-bar" style="width:0%"></i></div>
+      <div class="legend">
+        <span><i class="orn"></i>Painting ornament</span>
+        <span><i class="orn approved"></i>Approved, hunting</span>
+        <span><i class="orn found"></i>Gift found</span>
+      </div>
+    </div>
+    <ul class="people" id="people"></ul>
+    <div class="card">
+      <h3>House rules</h3>
+      <ol class="steps muted">
+        <li>Paint your ornament and ask the organizer for approval. Sloppy, low-effort ornaments get sent back.</li>
+        <li>Once approved, look for the gift with your name on it.</li>
+        <li>Leave other people's gifts where they are.</li>
+        <li>Found yours? Help anyone still searching. Dinner waits for the last gift.</li>
+      </ol>
+    </div>
+    <div class="card feature" id="reveal-card" hidden>
+      <span class="eyebrow" style="color:var(--gold)">Santa reveal</span>
+      <h2>Who was whose Santa</h2>
+      <ul class="pairs" id="reveal-list"></ul>
+    </div>
+  </section>
+
+  <!-- ORGANIZER -->
+  <section class="view" id="v-organizer" hidden>
+    <div class="card">
+      <div><span class="eyebrow">Step 1</span><h2>People and links</h2></div>
+      <p class="muted">Turn on the join link and share it with the group so people can add themselves. Or add names yourself and send each person their own link privately. Personal links act as that person, so never post those in group chats.</p>
+      <div id="join-link" class="view"></div>
+      <form id="add-form" class="view" novalidate>
+        <div><label for="add-names">Add people, one name per line</label><textarea id="add-names" placeholder="Aisyah&#10;Daniel&#10;Mei Ling"></textarea></div>
+        <div class="row"><button class="btn" type="submit">Add people</button><button class="btn ghost" type="button" id="copy-all">Copy all links</button><span class="status" id="add-status"></span></div>
+      </form>
+      <p class="status" id="org-summary"></p>
+      <ul class="list" id="org-people"></ul>
+    </div>
+    <div class="card">
+      <div><span class="eyebrow">Step 2</span><h2>Draw names</h2></div>
+      <p class="muted" id="draw-summary"></p>
+      <div id="draw-actions" class="view"></div>
+    </div>
+    <div class="card">
+      <div><span class="eyebrow">Step 3</span><h2>Where the gifts are</h2></div>
+      <p class="muted">Each Santa logs their hiding spot here. Spots stay covered until you tap Show, so you can check readiness without spoiling anything. The app never shows organizers who drew whom.</p>
+      <p class="status" id="hide-summary"></p>
+      <ul class="list" id="hide-list"></ul>
+    </div>
+    <div class="card">
+      <div><span class="eyebrow">After dinner</span><h2>Santa reveal</h2></div>
+      <p class="muted">Optional. Shows every Santa and receiver pair to everyone on the Hunt day tab.</p>
+      <div id="reveal-actions" class="view"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const HEADCOUNT = 18;
+  const HINTS_DUE = new Date(2026, 10, 15, 23, 59);
+  const EVENT_DAY = new Date(2026, 11, 23, 18, 0);
+  const VIEWS = ["wishlist", "santa", "hunt", "organizer"];
+  const TOKEN_KEY = "santa2026.token";
+  const AV_COLORS = ["#A3313C", "#2E6A48", "#B08835", "#173A2B", "#7A4E2D", "#5B4A7A", "#2F5E73"];
+  const $ = (s) => document.querySelector(s);
+
+  let token = null, D = null; // D = latest snapshot from the server
+  let hintsDirty = false, spotDirty = false, busy = false;
+  const ui = { confirmDraw: false, confirmReveal: false, confirmRemove: null, shownSpots: new Set(), shownLinks: new Set() };
+
+  // ---------- token handling ----------
+  const store = {
+    get() { try { return localStorage.getItem(TOKEN_KEY); } catch { return null; } },
+    set(v) { try { localStorage.setItem(TOKEN_KEY, v); } catch {} },
+    clear() { try { localStorage.removeItem(TOKEN_KEY); } catch {} },
+  };
+  const params = new URLSearchParams(location.search);
+  if (params.get("k")) {
+    token = params.get("k");
+    store.set(token);
+    params.delete("k");
+    history.replaceState(null, "", location.pathname + (params.toString() ? "?" + params : "") + location.hash);
+  } else token = store.get();
+  const linkFor = (t) => `${location.origin}/?k=${encodeURIComponent(t)}`;
+
+  // ---------- helpers ----------
+  function h(tag, attrs, ...kids) {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs || {})) {
+      if (v == null || v === false) continue;
+      if (k === "class") el.className = v;
+      else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v === true ? "" : v);
+    }
+    for (const kid of kids.flat()) if (kid != null && kid !== false) el.append(kid instanceof Node ? kid : String(kid));
+    return el;
+  }
+  const person = (id) => (D && D.people.find((p) => p.id === id)) || null;
+  const nameOf = (id) => (person(id) && person(id).name) || "Someone";
+  function avatar(id, name) {
+    let n = 0; for (const c of String(id)) n = (n * 31 + c.charCodeAt(0)) >>> 0;
+    const nm = name || nameOf(id);
+    const initials = nm.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join("");
+    return h("span", { class: "avatar", style: `background:${AV_COLORS[n % AV_COLORS.length]}`, "aria-hidden": "true" }, initials || "?");
+  }
+  const fmtDate = (iso) => new Date(iso).toLocaleString(undefined, { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" });
+  function notice(text, err) { const n = $("#notice"); n.textContent = text || ""; n.className = "notice" + (err ? " err" : ""); n.hidden = !text; }
+  function setStatus(el, text, kind) { el.textContent = text; el.className = "status" + (kind ? " " + kind : ""); }
+  const daysUntil = (d) => Math.ceil((d - new Date()) / 86400000);
+  const participants = () => (D ? D.people.filter((p) => p.hintCount > 0) : []);
+  const huntList = () => {
+    if (!D) return [];
+    const drawn = D.people.filter((p) => p.inDraw);
+    return drawn.length ? drawn : participants();
+  };
+  async function copyText(text, statusEl, okMsg) {
+    try { await navigator.clipboard.writeText(text); if (statusEl) setStatus(statusEl, okMsg, "ok"); return true; }
+    catch { if (statusEl) setStatus(statusEl, "Couldn't copy automatically. Use Show and copy the link by hand.", "err"); return false; }
+  }
+
+  // ---------- server ----------
+  async function api(action, args) {
+    const r = await fetch("/api/rpc", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ token, action, ...(args || {}) }),
+    });
+    let j; try { j = await r.json(); } catch { j = { error: "The server sent an unexpected reply. Try again." }; }
+    if (!r.ok) { const e = new Error(j.error || "Request failed."); e.status = r.status; throw e; }
+    return j;
+  }
+  async function act(action, args, statusEl) {
+    if (busy) return false;
+    busy = true;
+    try { D = await api(action, args); notice(""); render(); return true; }
+    catch (e) {
+      if (e.status === 401) return signOut(e.message), false;
+      if (statusEl) setStatus(statusEl, e.message, "err"); else notice(e.message, true);
+      return false;
+    } finally { busy = false; }
+  }
+  async function refresh() {
+    if (!token || busy || document.hidden) return;
+    try { D = await api("me"); render(); if ($("#notice").classList.contains("err")) notice(""); }
+    catch (e) {
+      if (e.status === 401) signOut(e.message);
+      else notice("Can't reach the server right now. What you see may be out of date.", true);
+    }
+  }
+  function signOut(msg) { token = null; D = null; store.clear(); render(); if (msg) notice(msg, true); }
+
+  // ---------- routing ----------
+  function currentView() {
+    if (!D) return "gate";
+    const v = location.hash.replace("#", "");
+    if (VIEWS.includes(v) && (v !== "organizer" || D.me.isAdmin)) return v;
+    if (D.me.isAdmin && !D.people.some((p) => !p.isAdmin && p.id !== D.me.id) ) return "organizer";
+    return D.myDraw ? "santa" : "wishlist";
+  }
+  function showView() {
+    const v = currentView();
+    $("#v-gate").hidden = v !== "gate";
+    $("#tabs").hidden = v === "gate";
+    for (const name of VIEWS) {
+      $("#v-" + name).hidden = name !== v;
+      $("#tab-" + name).setAttribute("aria-selected", String(name === v));
+    }
+  }
+  $("#tabs").addEventListener("click", (e) => {
+    const b = e.target.closest(".tab"); if (!b) return;
+    location.hash = b.dataset.view; showView();
+  });
+  window.addEventListener("hashchange", showView);
+
+  // ---------- render ----------
+  function render() {
+    renderHeader();
+    if (!D) {
+      $("#setup-card").hidden = !params.has("setup");
+      $("#join-card").hidden = !params.has("join");
+      $("#gate-card").hidden = params.has("join");
+      showView(); return;
+    }
+    $("#tab-organizer").hidden = !D.me.isAdmin;
+    renderWishlist(); renderSanta(); renderHunt(); if (D.me.isAdmin) renderOrganizer();
+    showView();
+  }
+
+  function renderHeader() {
+    const dEvent = daysUntil(EVENT_DAY), dHints = daysUntil(HINTS_DUE);
+    let t = "";
+    if (dHints > 0 && !(D && D.state.drawnAt)) t = `Hints close in ${dHints} day${dHints === 1 ? "" : "s"}`;
+    else if (dEvent > 0) t = `${dEvent} day${dEvent === 1 ? "" : "s"} to go`;
+    else if (dEvent === 0) t = "Today's the day";
+    $("#countdown").textContent = t;
+    $("#hello").hidden = !D;
+    if (D) $("#hello").textContent = `Hi, ${D.me.name}${D.me.isAdmin ? " · organizer" : ""}`;
+    const tabSanta = $("#tab-santa");
+    tabSanta.querySelector(".dot")?.remove();
+    if (D && D.myDraw && !D.myHide) tabSanta.append(h("span", { class: "dot", "aria-label": "to do" }));
+  }
+
+  function renderWishlist() {
+    const hints = D.me.hints || [];
+    if (!hintsDirty) ["hint1", "hint2", "hint3"].forEach((id, i) => { $("#" + id).value = hints[i] || ""; });
+    const st = $("#wish-status");
+    if (!st.dataset.flash) {
+      if (D.me.hintsUpdatedAt) setStatus(st, `Saved ${fmtDate(D.me.hintsUpdatedAt)}. You're in the draw.`, "ok");
+      else setStatus(st, "");
+    }
+    $("#joined-count").textContent = `${participants().length} of ${Math.max(HEADCOUNT, D.people.length)} teammates have saved their hints.`;
+  }
+
+  function renderSanta() {
+    const box = $("#santa-body");
+    const prev = document.getElementById("spot");
+    const keptSpot = prev ? prev.value : "";
+    const hadFocus = prev && document.activeElement === prev;
+    box.replaceChildren();
+    const myHints = (D.me.hints || []).filter(Boolean).length;
+    if (!D.myDraw && D.state.drawnAt && myHints) {
+      box.append(h("div", { class: "card" }, h("div", { class: "empty" },
+        h("h3", {}, "You're not in the current draw"),
+        h("p", {}, "Names were drawn before you joined, or the list changed afterwards. The organizer needs to redraw names. Check back here after that."))));
+      return;
+    }
+    if (!D.myDraw) {
+      box.append(h("div", { class: "card" }, h("div", { class: "empty" },
+        h("h3", {}, "Names haven't been drawn yet"),
+        h("p", {}, myHints ? "You're in. Once the organizer draws names after 15 Nov, your receiver and their three hints show up here."
+          : "Save your three hints first so you're in the draw. Your receiver shows up here after 15 Nov."),
+        !myHints ? h("button", { class: "btn", type: "button", onclick: () => { location.hash = "wishlist"; showView(); } }, "Write my hints") : null)));
+      return;
+    }
+    const r = D.myDraw;
+    box.append(h("div", { class: "card feature" },
+      h("span", { class: "eyebrow", style: "color:var(--gold)" }, "You're the Secret Santa for"),
+      h("div", { class: "receiver" }, avatar(r.receiverId, r.name), h("span", { class: "name" }, r.name)),
+      h("p", { class: "muted" }, "Keep it to yourself. Their hints:"),
+      r.hints.length ? h("ol", { class: "hints" }, r.hints.map((t) => h("li", {}, t)))
+        : h("p", {}, "They haven't written hints yet. Check back later; this page refreshes by itself."),
+    ));
+    box.append(h("div", { class: "card" },
+      h("h3", {}, "Your to-do"),
+      h("ol", { class: "steps" },
+        h("li", {}, "Pick a gift worth RM50 or more based on the hints."),
+        h("li", {}, ["Wrap it and put ", h("b", {}, r.name), "'s name on it."]),
+        h("li", {}, "Hide it somewhere in the office before 23 Dec."),
+        h("li", {}, "Tell the organizer where, below."))));
+
+    const ta = h("textarea", { id: "spot", maxlength: "400", placeholder: "e.g. Behind the printer in the pantry, inside the blue box" });
+    ta.value = spotDirty ? keptSpot : (D.myHide ? D.myHide.spot : "");
+    ta.addEventListener("input", () => { spotDirty = true; });
+    const st = h("span", { class: "status" + (D.myHide ? " ok" : "") }, D.myHide ? `Saved ${fmtDate(D.myHide.at)}. Only organizers can see this.` : "Only organizers can see this.");
+    const btn = h("button", { class: "btn", type: "submit" }, D.myHide ? "Update spot" : "Save hiding spot");
+    const form = h("form", { class: "view", novalidate: true, onsubmit: async (e) => {
+      e.preventDefault();
+      btn.disabled = true; setStatus(st, "Saving…");
+      const saved = ta.value;
+      spotDirty = false;
+      if (!(await act("saveSpot", { spot: saved }, st))) { spotDirty = true; btn.disabled = false; }
+    } }, h("div", {}, h("label", { for: "spot" }, "Where did you hide it?"), ta), h("div", { class: "row" }, btn, st));
+    box.append(h("div", { class: "card" }, form));
+    if (hadFocus) ta.focus();
+  }
+
+  function renderHunt() {
+    const list = huntList();
+    const meId = D.me.id, admin = D.me.isAdmin;
+    const foundN = list.filter((p) => p.found).length;
+    $("#found-count").textContent = foundN;
+    $("#found-of").textContent = `of ${list.length} gifts found`;
+    $("#found-bar").style.width = list.length ? (foundN / list.length * 100) + "%" : "0%";
+    $("#dinner-line").textContent = !list.length ? "" : foundN === list.length ? "Everyone's found their gift. Dinner time!" : `Dinner waits for the last ${list.length - foundN}.`;
+
+    const ul = $("#people"); ul.replaceChildren();
+    if (!list.length) ul.append(h("li", { class: "empty card", style: "grid-column:1/-1" }, h("h3", {}, "No one's in yet"), h("p", {}, "People appear here once they save their hints.")));
+    const sorted = [...list].sort((a, b) => (a.id === meId ? -1 : b.id === meId ? 1 : a.name.localeCompare(b.name)));
+    for (const p of sorted) {
+      const acts = h("div", { class: "acts" });
+      if (p.id === meId && p.approved && !p.found) acts.append(h("button", { class: "btn small", type: "button", onclick: () => act("setFound", { found: true }) }, "I found my gift"));
+      if (admin && !p.found) acts.append(h("button", { class: "btn small " + (p.approved ? "ghost" : "gold"), type: "button",
+        onclick: () => act("setApproved", { id: p.id, approved: !p.approved }) }, p.approved ? "Undo approval" : "Approve ornament"));
+      if (p.found && (p.id === meId || admin)) acts.append(h("button", { class: "btn small ghost", type: "button", onclick: () => act("setFound", { id: p.id, found: false }) }, "Undo"));
+      ul.append(h("li", { class: "person" + (p.id === meId ? " me" : "") },
+        h("i", { class: "orn " + (p.found ? "found" : p.approved ? "approved" : ""), "aria-hidden": "true" }),
+        h("div", { class: "info" },
+          h("span", { class: "nm" }, p.id === meId ? p.name + " (you)" : p.name),
+          h("span", { class: "status" }, p.found ? "Found their gift" : p.approved ? "Ornament approved, hunting" : "Painting ornament"),
+          acts.childElementCount ? acts : null)));
+    }
+
+    const pairs = D.state.reveal || [];
+    $("#reveal-card").hidden = !pairs.length;
+    $("#reveal-list").replaceChildren(...pairs
+      .slice().sort((a, b) => nameOf(a.santa).localeCompare(nameOf(b.santa)))
+      .map((x) => h("li", {}, h("b", {}, nameOf(x.santa)), h("em", {}, " was Santa for "), h("b", {}, nameOf(x.receiver)))));
+  }
+
+  function renderOrganizer() {
+    const A = D.admin;
+    const meId = D.me.id;
+    const ready = participants();
+    $("#org-summary").textContent = `${D.people.length} people added · ${ready.length} have saved their hints.`;
+
+    // shared join link
+    const jl = $("#join-link"); jl.replaceChildren();
+    const jst = h("span", { class: "status" });
+    if (A.joinCode) {
+      const url = `${location.origin}/?join=${encodeURIComponent(A.joinCode)}`;
+      jl.append(
+        h("div", { class: "row" }, h("span", { class: "chip ok" }, "Join link is on"),
+          h("button", { class: "btn small", type: "button", onclick: () => copyText(url, jst, "Join link copied. Share it with the group.") }, "Copy join link"),
+          h("button", { class: "btn link", type: "button", onclick: () => act("setJoin", { open: true }) }, "New join link"),
+          h("button", { class: "btn link", type: "button", onclick: () => act("setJoin", { open: false }) }, "Turn off"), jst),
+        h("div", { class: "linkbox" }, url));
+    } else {
+      jl.append(h("div", { class: "row" },
+        h("button", { class: "btn small ghost", type: "button", onclick: () => act("setJoin", { open: true }) }, "Turn on join link"),
+        h("span", { class: "status" }, D.state.drawnAt
+          ? "Joining closed when names were drawn. Anyone who joins now needs a redraw."
+          : "Off. People can only get in with a link from you.")));
+    }
+
+    const ul = $("#org-people"); ul.replaceChildren();
+    if (!D.people.length) ul.append(h("li", { class: "muted" }, "No one yet. Add names above."));
+    for (const p of D.people) {
+      const link = A.links.find((l) => l.id === p.id);
+      const shown = ui.shownLinks.has(p.id);
+      const st = h("span", { class: "status" });
+      const acts = h("div", { class: "acts" },
+        h("button", { class: "btn small ghost", type: "button", onclick: () => copyText(linkFor(link.token), st, "Link copied.") }, "Copy link"),
+        h("button", { class: "btn link", type: "button", onclick: () => { shown ? ui.shownLinks.delete(p.id) : ui.shownLinks.add(p.id); render(); } }, shown ? "Hide link" : "Show link"),
+        p.id !== meId ? h("button", { class: "btn link", type: "button", onclick: () => act("setAdmin", { id: p.id, isAdmin: !link.isAdmin }) }, link.isAdmin ? "Remove organizer" : "Make organizer") : null,
+        p.id !== meId ? h("button", { class: "btn link", type: "button", onclick: () => act("resetLink", { id: p.id }) }, "New link") : null,
+        p.id !== meId ? h("button", { class: "btn link", type: "button", onclick: () => { ui.confirmRemove = p.id; render(); } }, "Remove") : null,
+        st);
+      const li = h("li", {}, avatar(p.id, p.name), h("span", { class: "nm" }, p.name + (p.id === meId ? " (you)" : "")),
+        link.isAdmin ? h("span", { class: "chip" }, "Organizer") : null,
+        h("span", { class: "chip " + (p.hintCount === 3 ? "ok" : "warn") }, `${p.hintCount}/3 hints`),
+        D.state.drawnAt && p.hintCount > 0 && !p.inDraw ? h("span", { class: "chip warn" }, "Not in draw") : null,
+        acts,
+        shown ? h("div", { class: "linkbox" }, linkFor(link.token)) : null);
+      if (ui.confirmRemove === p.id) {
+        li.append(h("div", { class: "confirm", style: "flex-basis:100%" },
+          h("p", {}, `Remove ${p.name}? Their hints and link stop working.` + (p.inDraw ? " They're in the draw, so you'll need to redraw names." : "")),
+          h("div", { class: "row" },
+            h("button", { class: "btn", type: "button", onclick: async () => { ui.confirmRemove = null; await act("removePerson", { id: p.id }); } }, "Remove"),
+            h("button", { class: "btn ghost", type: "button", onclick: () => { ui.confirmRemove = null; render(); } }, "Cancel"))));
+      }
+      ul.append(li);
+    }
+
+    // draw
+    const act$ = $("#draw-actions"); act$.replaceChildren();
+    const drawnAt = D.state.drawnAt;
+    const missed = ready.filter((p) => !p.inDraw);
+    const incomplete = ready.filter((p) => p.hintCount < 3).length;
+    let summary = drawnAt
+      ? `Drawn ${fmtDate(drawnAt)} for ${D.state.drawnCount} people. Each person now sees their receiver on the My Santa task tab.` + (missed.length ? ` ${missed.length} saved hints after the draw.` : "")
+      : `Everyone who has saved hints goes into the draw. Each person gets one receiver and nobody draws themselves.` + (daysUntil(HINTS_DUE) > 0 ? ` Hints are due 15 Nov.` : "");
+    if (A.drawBroken) summary += " Someone in the draw was removed, so the draw needs to be redone.";
+    $("#draw-summary").textContent = summary;
+    if (ui.confirmDraw) {
+      act$.append(h("div", { class: "confirm" },
+        h("p", {}, drawnAt
+          ? `Redraw for ${ready.length} people? Everyone gets a new receiver. Anyone who already bought or hid a gift will need to start over.`
+          : `Draw names for ${ready.length} people?` + (incomplete ? ` ${incomplete} still have fewer than 3 hints.` : "") + " Everyone sees their receiver right away."),
+        h("div", { class: "row" },
+          h("button", { class: "btn", type: "button", onclick: async () => { ui.confirmDraw = false; await act("draw"); } }, drawnAt ? "Yes, redraw" : "Yes, draw names"),
+          h("button", { class: "btn ghost", type: "button", onclick: () => { ui.confirmDraw = false; render(); } }, "Cancel"))));
+    } else {
+      act$.append(h("div", { class: "row" },
+        h("button", { class: "btn" + (drawnAt && !A.drawBroken ? " ghost" : ""), type: "button", disabled: ready.length < 2, onclick: () => { ui.confirmDraw = true; render(); } }, drawnAt ? "Redraw names" : "Draw names"),
+        ready.length < 2 ? h("span", { class: "status" }, "Needs at least 2 people with hints.") : null));
+    }
+
+    // gifts
+    const hl = $("#hide-list"); hl.replaceChildren();
+    const gifts = [...A.gifts].sort((a, b) => a.receiverName.localeCompare(b.receiverName));
+    const hiddenN = gifts.filter((g) => g.hidden).length;
+    $("#hide-summary").textContent = gifts.length ? `${hiddenN} of ${gifts.length} gifts hidden.` : "Hiding spots appear here after the draw.";
+    for (const g of gifts) {
+      const shown = ui.shownSpots.has(g.receiverId);
+      hl.append(h("li", {}, avatar(g.receiverId, g.receiverName), h("span", { class: "nm" }, "Gift for " + g.receiverName),
+        h("span", { class: "chip " + (g.hidden ? "ok" : "warn") }, g.hidden ? "Hidden" : "Not hidden yet"),
+        g.hidden ? h("button", { class: "btn small ghost", type: "button", onclick: () => { shown ? ui.shownSpots.delete(g.receiverId) : ui.shownSpots.add(g.receiverId); render(); } }, shown ? "Cover" : "Show") : null,
+        g.hidden && shown ? h("div", { class: "spot" }, g.spot) : null));
+    }
+
+    // reveal
+    const ra = $("#reveal-actions"); ra.replaceChildren();
+    if (D.state.reveal) {
+      ra.append(h("div", { class: "row" }, h("span", { class: "chip ok" }, "Revealed to everyone"),
+        h("button", { class: "btn small ghost", type: "button", onclick: () => act("setReveal", { on: false }) }, "Hide reveal")));
+    } else if (ui.confirmReveal) {
+      ra.append(h("div", { class: "confirm" }, h("p", {}, "Show all Santa pairs to everyone now?"),
+        h("div", { class: "row" },
+          h("button", { class: "btn", type: "button", onclick: async () => { ui.confirmReveal = false; await act("setReveal", { on: true }); } }, "Reveal Santas"),
+          h("button", { class: "btn ghost", type: "button", onclick: () => { ui.confirmReveal = false; render(); } }, "Cancel"))));
+    } else {
+      ra.append(h("button", { class: "btn gold", type: "button", disabled: !drawnAt, onclick: () => { ui.confirmReveal = true; render(); } }, "Reveal Santas…"));
+    }
+  }
+
+  // ---------- forms ----------
+  $("#wish-form").addEventListener("input", () => { hintsDirty = true; });
+  $("#wish-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const st = $("#wish-status");
+    const hints = ["hint1", "hint2", "hint3"].map((id) => $("#" + id).value.trim());
+    const flash = (msg, kind) => { st.dataset.flash = "1"; setStatus(st, msg, kind); setTimeout(() => { delete st.dataset.flash; }, 5000); };
+    if (hints.some((x) => !x)) return flash("Fill in all three hints so your Santa has enough to go on.", "err");
+    $("#save-hints").disabled = true; setStatus(st, "Saving…");
+    hintsDirty = false;
+    if (!(await act("saveHints", { hints }, st))) hintsDirty = true;
+    $("#save-hints").disabled = false;
+  });
+
+  $("#add-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const st = $("#add-status");
+    const names = $("#add-names").value.split("\n").map((s) => s.trim()).filter(Boolean);
+    if (!names.length) return setStatus(st, "Type at least one name.", "err");
+    const before = D.people.length;
+    if (await act("addPeople", { names }, st)) {
+      $("#add-names").value = "";
+      const added = D.people.length - before;
+      setStatus(st, added ? `Added ${added}. Copy each link and send it privately.` : "Those names are already on the list.", added ? "ok" : "");
+    }
+  });
+  $("#copy-all").addEventListener("click", () => {
+    const lines = D.people.map((p) => `${p.name}: ${linkFor(D.admin.links.find((l) => l.id === p.id).token)}`);
+    copyText(lines.join("\n"), $("#add-status"), `Copied ${lines.length} links. Send each one privately.`);
+  });
+
+  $("#setup-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const st = $("#setup-status");
+    setStatus(st, "Creating…");
+    try {
+      const r = await fetch("/api/rpc", { method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ action: "setup", name: $("#setup-name").value, setupKey: $("#setup-key").value }) });
+      const j = await r.json();
+      if (!r.ok) return setStatus(st, j.error || "Setup failed.", "err");
+      token = j.token; store.set(token);
+      params.delete("setup");
+      history.replaceState(null, "", location.pathname + "#organizer");
+      notice("You're the organizer. Bookmark this link so you can get back in on another device: " + linkFor(token));
+      await refresh();
+    } catch { setStatus(st, "Couldn't reach the server. Try again.", "err"); }
+  });
+
+  $("#join-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const st = $("#join-status");
+    const name = $("#join-name").value.trim();
+    if (!name) return setStatus(st, "Enter your name.", "err");
+    setStatus(st, "Joining…");
+    try {
+      const r = await fetch("/api/rpc", { method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ action: "join", code: params.get("join"), name }) });
+      const j = await r.json();
+      if (!r.ok) return setStatus(st, j.error || "Couldn't join.", "err");
+      token = j.token; store.set(token);
+      params.delete("join");
+      history.replaceState(null, "", location.pathname + "#wishlist");
+      notice("You're in! Bookmark your personal link to get back in on another device: " + linkFor(token));
+      await refresh();
+    } catch { setStatus(st, "Couldn't reach the server. Try again.", "err"); }
+  });
+
+  // ---------- boot ----------
+  // Already joined on this device? Opening the group join link again just takes you to your own page.
+  if (token && params.has("join")) {
+    params.delete("join");
+    history.replaceState(null, "", location.pathname + (params.toString() ? "?" + params : "") + location.hash);
+  }
+  render();
+  if (token) refresh();
+  setInterval(refresh, 15000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) refresh(); });
+})();
+</script>
+</body>
+</html>
