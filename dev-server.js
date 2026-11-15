@@ -1,5 +1,5 @@
 // Local preview with an in-memory database: `npm run dev`, then open http://localhost:3000/?setup
-// Setup key is "dev". Data resets every time the server restarts.
+// Setup key is "dev". Data resets every time the server restarts. TV board: /?tv=CODE (turn it on in Organizer).
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, join, normalize } from "node:path";
@@ -8,7 +8,10 @@ import { makeCore, AppError } from "./lib/core.js";
 import { memoryStore } from "./lib/store-memory.js";
 
 const root = join(fileURLToPath(new URL(".", import.meta.url)), "public");
-const core = makeCore(memoryStore(), { setupKey: process.env.SETUP_KEY || "dev" });
+const core = makeCore(memoryStore(), {
+  setupKey: process.env.SETUP_KEY || "dev",
+  huntStart: process.env.HUNT_START, // e.g. HUNT_START=2020-01-01 to preview hunt day
+});
 const types = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml" };
 const port = Number(process.env.PORT) || 3000;
 

@@ -10,6 +10,7 @@ export default async function handler(req, res) {
   try {
     core ??= makeCore(supabaseStore(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY), {
       setupKey: process.env.SETUP_KEY,
+      huntStart: process.env.HUNT_START, // optional, e.g. for a rehearsal; defaults to 23 Dec 00:00 MYT
     });
     const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
     return res.status(200).json(await core.handle(body));

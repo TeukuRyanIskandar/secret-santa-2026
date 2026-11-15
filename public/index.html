@@ -103,14 +103,26 @@ textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
 .person .info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
 .person .nm{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .person .acts{display:flex;flex-wrap:wrap;gap:6px}
-.orn{position:relative;width:26px;height:26px;border-radius:50%;flex:none;border:2px solid var(--line);background:var(--surface);margin-top:6px}
-.orn::before{content:"";position:absolute;left:50%;top:-6px;width:8px;height:5px;transform:translateX(-50%);background:var(--gold);border-radius:2px}
-.orn.approved{background:var(--gold);border-color:var(--gold)}
-.orn.found{background:var(--ok);border-color:var(--ok)}
-.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:var(--muted)}
-.legend span{display:inline-flex;gap:8px;align-items:center}
-.legend .orn{width:14px;height:14px;margin-top:3px}
-.legend .orn::before{top:-4px;width:5px;height:3px}
+.person.found{border-color:var(--ok);background:var(--ok-soft)}
+.person .avatar{width:32px;height:32px;font-size:12px}
+.mynum{font-family:var(--display);font-style:italic;color:var(--gold);font-size:clamp(40px,9vw,60px);line-height:1;font-variant-numeric:tabular-nums}
+.cluebox{padding:14px 16px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);white-space:pre-wrap;overflow-wrap:anywhere}
+.numtag{flex:none;min-width:40px;font-family:var(--display);font-style:italic;font-size:22px;color:var(--gold);font-variant-numeric:tabular-nums}
+.spot{white-space:pre-wrap}
+
+/* TV mode: read-only hunt board for a big screen */
+body.tv .wrap{max-width:1500px}
+body.tv .facts,body.tv .hello{display:none}
+.tv-big{font-family:var(--display);font-size:clamp(64px,10vw,140px);line-height:1;font-variant-numeric:tabular-nums}
+.tv-of{font-size:clamp(20px,2.6vw,34px);color:var(--muted)}
+.tv-dinner{font-size:clamp(18px,2.2vw,30px);font-weight:700}
+.tv-progress{height:18px}
+.tv-people{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.tv-people li{display:flex;flex-direction:column;gap:4px;padding:18px 22px;border:2px solid var(--line);border-radius:16px;background:var(--surface);min-width:0}
+.tv-people li.found{border-color:var(--ok);background:var(--ok-soft)}
+.tv-people .nm{font-family:var(--display);font-size:clamp(24px,2.8vw,40px);line-height:1.15;overflow-wrap:anywhere}
+.tv-people .st{font-size:clamp(15px,1.6vw,22px);font-weight:700;color:var(--muted)}
+.tv-people li.found .st{color:var(--ok)}
 
 .list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .list li{display:flex;gap:10px 12px;align-items:center;padding:12px 0;border-top:1px solid var(--line);flex-wrap:wrap}
@@ -135,8 +147,9 @@ textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
     <span class="eyebrow">Christmas Event 2026 · Hunt</span>
     <h1>Secret <em>Santa</em></h1>
     <div class="facts">
-      <span>Event <b>Wed, 23 Dec 2026</b></span>
-      <span>Hints due <b>Sun, 15 Nov</b></span>
+      <span>Wishlist due <b>Wed, 18 Nov</b></span>
+      <span>Gifts hidden by <b>Mon, 21 Dec</b></span>
+      <span>Hunt <b>Wed, 23 Dec 2026</b></span>
       <span>Gift budget <b>RM50 and above</b></span>
       <span id="countdown"></span>
     </div>
@@ -145,7 +158,7 @@ textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
 </header>
 
 <nav class="tabs wrap" role="tablist" id="tabs" hidden>
-  <button class="tab" role="tab" data-view="wishlist" id="tab-wishlist">My hints</button>
+  <button class="tab" role="tab" data-view="wishlist" id="tab-wishlist">My wishlist</button>
   <button class="tab" role="tab" data-view="santa" id="tab-santa">My Santa task</button>
   <button class="tab" role="tab" data-view="hunt" id="tab-hunt">Hunt day</button>
   <button class="tab" role="tab" data-view="organizer" id="tab-organizer" hidden>Organizer</button>
@@ -186,15 +199,16 @@ textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
     <div class="card">
       <div>
         <span class="eyebrow">Before the event</span>
-        <h2>Three hints for your Santa</h2>
+        <h2>Your three-item wishlist</h2>
       </div>
-      <p class="muted">Write three clues about what you'd like. Your Secret Santa will pick a gift from them. Saving your hints puts you in the draw. Only your Santa will see them. Names are drawn after <b>15 Nov 2026</b>.</p>
+      <p class="muted">List three things you'd like. Your Secret Santa picks a gift from them. Saving your wishlist puts you in the draw. Please save it by <b>Wed 18 Nov, 11:59 PM</b>.</p>
+      <p><b>Your Santa will see your number, not your name.</b></p>
       <form id="wish-form" class="view" novalidate>
-        <div class="field"><span class="num">1</span><div><label for="hint1">Hint 1</label><textarea id="hint1" maxlength="280" placeholder="e.g. I drink a lot of tea at my desk"></textarea></div></div>
-        <div class="field"><span class="num">2</span><div><label for="hint2">Hint 2</label><textarea id="hint2" maxlength="280" placeholder="e.g. I've been wanting to try film photography"></textarea></div></div>
-        <div class="field"><span class="num">3</span><div><label for="hint3">Hint 3</label><textarea id="hint3" maxlength="280" placeholder="e.g. Size M if it's something to wear"></textarea></div></div>
+        <div class="field"><span class="num">1</span><div><label for="hint1">Wish 1</label><textarea id="hint1" maxlength="280" placeholder="e.g. A nice tea set for my desk"></textarea></div></div>
+        <div class="field"><span class="num">2</span><div><label for="hint2">Wish 2</label><textarea id="hint2" maxlength="280" placeholder="e.g. Anything for film photography"></textarea></div></div>
+        <div class="field"><span class="num">3</span><div><label for="hint3">Wish 3</label><textarea id="hint3" maxlength="280" placeholder="e.g. A cosy hoodie, size M"></textarea></div></div>
         <div class="row">
-          <button class="btn" type="submit" id="save-hints">Save my hints</button>
+          <button class="btn" type="submit" id="save-hints">Save my wishlist</button>
           <span class="status" id="wish-status"></span>
         </div>
       </form>
@@ -209,34 +223,46 @@ textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
 
   <!-- HUNT -->
   <section class="view" id="v-hunt" hidden>
+    <div id="my-clues" class="view"></div>
     <div class="card">
-      <span class="eyebrow">On the day · 6:00 PM</span>
+      <span class="eyebrow">On the day · Wed 23 Dec</span>
       <div class="row" style="justify-content:space-between;align-items:flex-end">
         <div><span class="big" id="found-count">0</span> <span class="muted" id="found-of">of 0 gifts found</span></div>
         <span class="status" id="dinner-line"></span>
       </div>
       <div class="progress" aria-hidden="true"><i id="found-bar" style="width:0%"></i></div>
-      <div class="legend">
-        <span><i class="orn"></i>Painting ornament</span>
-        <span><i class="orn approved"></i>Approved, hunting</span>
-        <span><i class="orn found"></i>Gift found</span>
-      </div>
     </div>
     <ul class="people" id="people"></ul>
     <div class="card">
       <h3>House rules</h3>
       <ol class="steps muted">
-        <li>Paint your ornament and ask the organizer for approval. Sloppy, low-effort ornaments get sent back.</li>
-        <li>Once approved, look for the gift with your name on it.</li>
+        <li>Your clues unlock here on Wed 23 Dec.</li>
+        <li>Follow them and look for the gift labelled with your number.</li>
         <li>Leave other people's gifts where they are.</li>
-        <li>Found yours? Help anyone still searching. Dinner waits for the last gift.</li>
+        <li>Found yours? Tap "I found my gift", then help anyone still searching. Dinner waits for the last gift.</li>
       </ol>
     </div>
-    <div class="card feature" id="reveal-card" hidden>
-      <span class="eyebrow" style="color:var(--gold)">Santa reveal</span>
-      <h2>Who was whose Santa</h2>
-      <ul class="pairs" id="reveal-list"></ul>
+  </section>
+
+  <!-- TV BOARD (/?tv=CODE) -->
+  <section class="view" id="v-tv" hidden>
+    <div class="card" id="tv-error" hidden>
+      <div class="empty">
+        <h3 id="tv-error-title">This TV link isn't working</h3>
+        <p id="tv-error-text">It may have been turned off or replaced. Ask an organizer for the current TV link.</p>
+      </div>
     </div>
+    <div class="view" id="tv-board" hidden>
+      <div class="card">
+        <div class="row" style="justify-content:space-between;align-items:flex-end">
+          <div><span class="tv-big" id="tv-count">0</span> <span class="tv-of" id="tv-of">of 0 gifts found</span></div>
+          <span class="tv-dinner" id="tv-dinner"></span>
+        </div>
+        <div class="progress tv-progress" aria-hidden="true"><i id="tv-bar" style="width:0%"></i></div>
+      </div>
+      <ul class="tv-people" id="tv-people"></ul>
+    </div>
+    <p class="status" id="tv-status"></p>
   </section>
 
   <!-- ORGANIZER -->
@@ -258,32 +284,33 @@ textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
       <div id="draw-actions" class="view"></div>
     </div>
     <div class="card">
-      <div><span class="eyebrow">Step 3</span><h2>Where the gifts are</h2></div>
-      <p class="muted">Each Santa logs their hiding spot here. Spots stay covered until you tap Show, so you can check readiness without spoiling anything. The app never shows organizers who drew whom.</p>
+      <div><span class="eyebrow">Step 3 · by Mon 21 Dec</span><h2>Gift readiness</h2></div>
+      <p class="muted" id="hide-intro"></p>
       <p class="status" id="hide-summary"></p>
       <ul class="list" id="hide-list"></ul>
     </div>
     <div class="card">
-      <div><span class="eyebrow">After dinner</span><h2>Santa reveal</h2></div>
-      <p class="muted">Optional. Shows every Santa and receiver pair to everyone on the Hunt day tab.</p>
-      <div id="reveal-actions" class="view"></div>
+      <div><span class="eyebrow">Step 4 · Wed 23 Dec</span><h2>Hunt board on the TV</h2></div>
+      <p class="muted">Open the TV link on the office screen to show who has found their gift. It shows names and found status only, no numbers. Anyone with the link can see it, so turn it off after the event.</p>
+      <div id="tv-link" class="view"></div>
     </div>
   </section>
 </main>
 
 <script>
 (() => {
-  const HEADCOUNT = 18;
-  const HINTS_DUE = new Date(2026, 10, 15, 23, 59);
-  const EVENT_DAY = new Date(2026, 11, 23, 18, 0);
+  // Display-only dates (Malaysia time). The server decides when clues unlock.
+  const WISHLIST_DUE = new Date("2026-11-18T23:59:00+08:00");
+  const GIFTS_DUE = new Date("2026-12-21T23:59:00+08:00");
+  const EVENT_DAY = new Date("2026-12-23T18:00:00+08:00");
   const VIEWS = ["wishlist", "santa", "hunt", "organizer"];
   const TOKEN_KEY = "santa2026.token";
   const AV_COLORS = ["#A3313C", "#2E6A48", "#B08835", "#173A2B", "#7A4E2D", "#5B4A7A", "#2F5E73"];
   const $ = (s) => document.querySelector(s);
 
   let token = null, D = null; // D = latest snapshot from the server
-  let hintsDirty = false, spotDirty = false, busy = false;
-  const ui = { confirmDraw: false, confirmReveal: false, confirmRemove: null, shownSpots: new Set(), shownLinks: new Set() };
+  let hintsDirty = false, hideDirty = false, busy = false;
+  const ui = { confirmDraw: false, confirmRemove: null, shownGifts: new Set(), shownLinks: new Set() };
 
   // ---------- token handling ----------
   const store = {
@@ -292,7 +319,10 @@ textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
     clear() { try { localStorage.removeItem(TOKEN_KEY); } catch {} },
   };
   const params = new URLSearchParams(location.search);
-  if (params.get("k")) {
+  // TV mode (/?tv=CODE) never reads, writes or clears the personal token.
+  const TV = params.get("tv");
+  if (TV) { /* no token in TV mode */ }
+  else if (params.get("k")) {
     token = params.get("k");
     store.set(token);
     params.delete("k");
@@ -324,15 +354,18 @@ textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
   function notice(text, err) { const n = $("#notice"); n.textContent = text || ""; n.className = "notice" + (err ? " err" : ""); n.hidden = !text; }
   function setStatus(el, text, kind) { el.textContent = text; el.className = "status" + (kind ? " " + kind : ""); }
   const daysUntil = (d) => Math.ceil((d - new Date()) / 86400000);
+  const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
   const participants = () => (D ? D.people.filter((p) => p.hintCount > 0) : []);
   const huntList = () => {
     if (!D) return [];
     const drawn = D.people.filter((p) => p.inDraw);
     return drawn.length ? drawn : participants();
   };
+  const myNumber = () => (D && D.me && D.me.number != null ? D.me.number : null);
+  const huntStarted = () => !!(D && D.state && D.state.huntStarted);
   async function copyText(text, statusEl, okMsg) {
     try { await navigator.clipboard.writeText(text); if (statusEl) setStatus(statusEl, okMsg, "ok"); return true; }
-    catch { if (statusEl) setStatus(statusEl, "Couldn't copy automatically. Use Show and copy the link by hand.", "err"); return false; }
+    catch { if (statusEl) setStatus(statusEl, "Couldn't copy automatically. Copy the link below by hand.", "err"); return false; }
   }
 
   // ---------- server ----------
@@ -372,6 +405,7 @@ textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
     const v = location.hash.replace("#", "");
     if (VIEWS.includes(v) && (v !== "organizer" || D.me.isAdmin)) return v;
     if (D.me.isAdmin && !D.people.some((p) => !p.isAdmin && p.id !== D.me.id) ) return "organizer";
+    if (huntStarted()) return "hunt";
     return D.myDraw ? "santa" : "wishlist";
   }
   function showView() {
@@ -387,7 +421,6 @@ textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
     const b = e.target.closest(".tab"); if (!b) return;
     location.hash = b.dataset.view; showView();
   });
-  window.addEventListener("hashchange", showView);
 
   // ---------- render ----------
   function render() {
@@ -404,10 +437,11 @@ textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
   }
 
   function renderHeader() {
-    const dEvent = daysUntil(EVENT_DAY), dHints = daysUntil(HINTS_DUE);
+    const dEvent = daysUntil(EVENT_DAY), dWish = daysUntil(WISHLIST_DUE), dGifts = daysUntil(GIFTS_DUE);
     let t = "";
-    if (dHints > 0 && !(D && D.state.drawnAt)) t = `Hints close in ${dHints} day${dHints === 1 ? "" : "s"}`;
-    else if (dEvent > 0) t = `${dEvent} day${dEvent === 1 ? "" : "s"} to go`;
+    if (dWish > 0 && !(D && D.state.drawnAt)) t = `Wishlists close in ${plural(dWish, "day")}`;
+    else if (D && D.myDraw && !D.myHide && dGifts > 0) t = `Gift and clues due in ${plural(dGifts, "day")}`;
+    else if (dEvent > 0) t = `${plural(dEvent, "day")} to go`;
     else if (dEvent === 0) t = "Today's the day";
     $("#countdown").textContent = t;
     $("#hello").hidden = !D;
@@ -425,14 +459,15 @@ textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
       if (D.me.hintsUpdatedAt) setStatus(st, `Saved ${fmtDate(D.me.hintsUpdatedAt)}. You're in the draw.`, "ok");
       else setStatus(st, "");
     }
-    $("#joined-count").textContent = `${participants().length} of ${Math.max(HEADCOUNT, D.people.length)} teammates have saved their hints.`;
+    $("#joined-count").textContent = `${participants().length} of ${D.people.length} people have saved their wishlist.`;
   }
 
   function renderSanta() {
     const box = $("#santa-body");
-    const prev = document.getElementById("spot");
-    const keptSpot = prev ? prev.value : "";
-    const hadFocus = prev && document.activeElement === prev;
+    // Keep what the person is typing across background refreshes.
+    const prevClues = document.getElementById("clues"), prevSpot = document.getElementById("spot");
+    const kept = { clues: prevClues ? prevClues.value : "", spot: prevSpot ? prevSpot.value : "" };
+    const focusId = document.activeElement && ["clues", "spot"].includes(document.activeElement.id) ? document.activeElement.id : null;
     box.replaceChildren();
     const myHints = (D.me.hints || []).filter(Boolean).length;
     if (!D.myDraw && D.state.drawnAt && myHints) {
@@ -444,44 +479,74 @@ textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
     if (!D.myDraw) {
       box.append(h("div", { class: "card" }, h("div", { class: "empty" },
         h("h3", {}, "Names haven't been drawn yet"),
-        h("p", {}, myHints ? "You're in. Once the organizer draws names after 15 Nov, your receiver and their three hints show up here."
-          : "Save your three hints first so you're in the draw. Your receiver shows up here after 15 Nov."),
-        !myHints ? h("button", { class: "btn", type: "button", onclick: () => { location.hash = "wishlist"; showView(); } }, "Write my hints") : null)));
+        h("p", {}, myHints ? "You're in. Names are drawn on Thu 19 Nov. After that, your receiver's number and wishlist show up here."
+          : "Save your wishlist first so you're in the draw. It's due Wed 18 Nov, 11:59 PM."),
+        !myHints ? h("button", { class: "btn", type: "button", onclick: () => { location.hash = "wishlist"; showView(); } }, "Write my wishlist") : null)));
       return;
     }
     const r = D.myDraw;
+    const tag = "#" + r.receiverNumber;
+    const wishes = (r.hints || []).filter(Boolean);
     box.append(h("div", { class: "card feature" },
       h("span", { class: "eyebrow", style: "color:var(--gold)" }, "You're the Secret Santa for"),
-      h("div", { class: "receiver" }, avatar(r.receiverId, r.name), h("span", { class: "name" }, r.name)),
-      h("p", { class: "muted" }, "Keep it to yourself. Their hints:"),
-      r.hints.length ? h("ol", { class: "hints" }, r.hints.map((t) => h("li", {}, t)))
-        : h("p", {}, "They haven't written hints yet. Check back later; this page refreshes by itself."),
+      h("div", { class: "receiver" }, h("span", { class: "name" }, tag)),
+      h("p", { class: "muted" }, "You only get a number, not a name. Keep it to yourself. Their wishlist:"),
+      wishes.length ? h("ol", { class: "hints" }, wishes.map((t) => h("li", {}, t)))
+        : h("p", {}, "They haven't written their wishlist yet. Check back later; this page refreshes by itself."),
     ));
+    const mine = myNumber();
+    if (mine != null) {
+      box.append(h("div", { class: "notice" }, h("b", {}, `You are #${mine}`), ` — look for the gift labelled #${mine} on 23 Dec.`));
+    }
     box.append(h("div", { class: "card" },
       h("h3", {}, "Your to-do"),
       h("ol", { class: "steps" },
-        h("li", {}, "Pick a gift worth RM50 or more based on the hints."),
-        h("li", {}, ["Wrap it and put ", h("b", {}, r.name), "'s name on it."]),
-        h("li", {}, "Hide it somewhere in the office before 23 Dec."),
-        h("li", {}, "Tell the organizer where, below."))));
+        h("li", {}, "Buy a gift worth RM50 or more from their wishlist."),
+        h("li", {}, ["Wrap it and label it ", h("b", {}, tag), ". No names."]),
+        h("li", {}, ["Hide it somewhere in the office by ", h("b", {}, "Mon 21 Dec, 11:59 PM"), "."]),
+        h("li", {}, "Write clues to help them find it, and tell the organizers the exact spot, below."))));
 
-    const ta = h("textarea", { id: "spot", maxlength: "400", placeholder: "e.g. Behind the printer in the pantry, inside the blue box" });
-    ta.value = spotDirty ? keptSpot : (D.myHide ? D.myHide.spot : "");
-    ta.addEventListener("input", () => { spotDirty = true; });
-    const st = h("span", { class: "status" + (D.myHide ? " ok" : "") }, D.myHide ? `Saved ${fmtDate(D.myHide.at)}. Only organizers can see this.` : "Only organizers can see this.");
-    const btn = h("button", { class: "btn", type: "submit" }, D.myHide ? "Update spot" : "Save hiding spot");
+    const clues = h("textarea", { id: "clues", maxlength: "600", placeholder: "e.g. Where the coffee is strongest, look up high behind something blue." });
+    const spot = h("textarea", { id: "spot", maxlength: "600", placeholder: "e.g. Pantry, top shelf behind the blue box" });
+    clues.value = hideDirty ? kept.clues : (D.myHide ? D.myHide.clues || "" : "");
+    spot.value = hideDirty ? kept.spot : (D.myHide ? D.myHide.spot || "" : "");
+    clues.addEventListener("input", () => { hideDirty = true; });
+    spot.addEventListener("input", () => { hideDirty = true; });
+    const st = h("span", { class: "status" + (D.myHide ? " ok" : "") }, D.myHide ? `Saved ${fmtDate(D.myHide.at)}.` : "Due Mon 21 Dec, 11:59 PM.");
+    const btn = h("button", { class: "btn", type: "submit" }, D.myHide ? "Update clues and spot" : "Save clues and spot");
     const form = h("form", { class: "view", novalidate: true, onsubmit: async (e) => {
       e.preventDefault();
+      const args = { clues: clues.value.trim(), spot: spot.value.trim() };
+      if (!args.clues || !args.spot) return setStatus(st, "Fill in both the clues and the exact spot.", "err");
       btn.disabled = true; setStatus(st, "Saving…");
-      const saved = ta.value;
-      spotDirty = false;
-      if (!(await act("saveSpot", { spot: saved }, st))) { spotDirty = true; btn.disabled = false; }
-    } }, h("div", {}, h("label", { for: "spot" }, "Where did you hide it?"), ta), h("div", { class: "row" }, btn, st));
+      hideDirty = false;
+      if (!(await act("saveHide", args, st))) { hideDirty = true; btn.disabled = false; }
+    } },
+      h("div", {}, h("label", { for: "clues" }, `Clues for ${tag} (they'll see these on 23 Dec)`), clues),
+      h("div", {}, h("label", { for: "spot" }, "Exact spot (only organizers see this)"), spot),
+      h("div", { class: "row" }, btn, st));
     box.append(h("div", { class: "card" }, form));
-    if (hadFocus) ta.focus();
+    if (focusId) document.getElementById(focusId).focus();
   }
 
   function renderHunt() {
+    // Top card: my number and my clues.
+    const mc = $("#my-clues"); mc.replaceChildren();
+    const mine = myNumber();
+    const card = h("div", { class: "card feature" }, h("span", { class: "eyebrow", style: "color:var(--gold)" }, "Your gift"));
+    if (mine == null) {
+      card.append(h("p", {}, D.state.drawnAt
+        ? "You're not in the current draw, so there's no gift labelled for you yet. Ask an organizer."
+        : "You'll get your number when names are drawn on Thu 19 Nov."));
+    } else {
+      card.append(h("div", {}, h("span", { class: "mynum" }, `You are #${mine}`)),
+        h("p", { class: "muted" }, `Look for the gift labelled #${mine}.`));
+      if (!huntStarted()) card.append(h("p", {}, "Your clues unlock on Wed 23 Dec."));
+      else if (D.myClues && D.myClues.clues) card.append(h("p", { class: "muted" }, "Your Santa's clues:"), h("div", { class: "cluebox" }, D.myClues.clues));
+      else card.append(h("p", {}, "Your Santa didn't leave clues. Ask an organizer."));
+    }
+    mc.append(card);
+
     const list = huntList();
     const meId = D.me.id, admin = D.me.isAdmin;
     const foundN = list.filter((p) => p.found).length;
@@ -491,34 +556,27 @@ textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
     $("#dinner-line").textContent = !list.length ? "" : foundN === list.length ? "Everyone's found their gift. Dinner time!" : `Dinner waits for the last ${list.length - foundN}.`;
 
     const ul = $("#people"); ul.replaceChildren();
-    if (!list.length) ul.append(h("li", { class: "empty card", style: "grid-column:1/-1" }, h("h3", {}, "No one's in yet"), h("p", {}, "People appear here once they save their hints.")));
+    if (!list.length) ul.append(h("li", { class: "empty card", style: "grid-column:1/-1" }, h("h3", {}, "No one's in yet"), h("p", {}, "People appear here once they save their wishlist.")));
     const sorted = [...list].sort((a, b) => (a.id === meId ? -1 : b.id === meId ? 1 : a.name.localeCompare(b.name)));
     for (const p of sorted) {
       const acts = h("div", { class: "acts" });
-      if (p.id === meId && p.approved && !p.found) acts.append(h("button", { class: "btn small", type: "button", onclick: () => act("setFound", { found: true }) }, "I found my gift"));
-      if (admin && !p.found) acts.append(h("button", { class: "btn small " + (p.approved ? "ghost" : "gold"), type: "button",
-        onclick: () => act("setApproved", { id: p.id, approved: !p.approved }) }, p.approved ? "Undo approval" : "Approve ornament"));
+      if (p.id === meId && !p.found && huntStarted() && p.inDraw) acts.append(h("button", { class: "btn small", type: "button", onclick: () => act("setFound", { found: true }) }, "I found my gift"));
       if (p.found && (p.id === meId || admin)) acts.append(h("button", { class: "btn small ghost", type: "button", onclick: () => act("setFound", { id: p.id, found: false }) }, "Undo"));
-      ul.append(h("li", { class: "person" + (p.id === meId ? " me" : "") },
-        h("i", { class: "orn " + (p.found ? "found" : p.approved ? "approved" : ""), "aria-hidden": "true" }),
+      ul.append(h("li", { class: "person" + (p.id === meId ? " me" : "") + (p.found ? " found" : "") },
+        avatar(p.id, p.name),
         h("div", { class: "info" },
           h("span", { class: "nm" }, p.id === meId ? p.name + " (you)" : p.name),
-          h("span", { class: "status" }, p.found ? "Found their gift" : p.approved ? "Ornament approved, hunting" : "Painting ornament"),
+          h("span", { class: "status" + (p.found ? " ok" : "") }, p.found ? "Found it" : "Still looking"),
           acts.childElementCount ? acts : null)));
     }
-
-    const pairs = D.state.reveal || [];
-    $("#reveal-card").hidden = !pairs.length;
-    $("#reveal-list").replaceChildren(...pairs
-      .slice().sort((a, b) => nameOf(a.santa).localeCompare(nameOf(b.santa)))
-      .map((x) => h("li", {}, h("b", {}, nameOf(x.santa)), h("em", {}, " was Santa for "), h("b", {}, nameOf(x.receiver)))));
   }
 
   function renderOrganizer() {
-    const A = D.admin;
+    const A = D.admin || {};
+    const links = A.links || [];
     const meId = D.me.id;
     const ready = participants();
-    $("#org-summary").textContent = `${D.people.length} people added · ${ready.length} have saved their hints.`;
+    $("#org-summary").textContent = `${D.people.length} people added · ${ready.length} have saved their wishlist.`;
 
     // shared join link
     const jl = $("#join-link"); jl.replaceChildren();
@@ -542,25 +600,25 @@ textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
     const ul = $("#org-people"); ul.replaceChildren();
     if (!D.people.length) ul.append(h("li", { class: "muted" }, "No one yet. Add names above."));
     for (const p of D.people) {
-      const link = A.links.find((l) => l.id === p.id);
+      const link = links.find((l) => l.id === p.id) || {};
       const shown = ui.shownLinks.has(p.id);
       const st = h("span", { class: "status" });
       const acts = h("div", { class: "acts" },
-        h("button", { class: "btn small ghost", type: "button", onclick: () => copyText(linkFor(link.token), st, "Link copied.") }, "Copy link"),
-        h("button", { class: "btn link", type: "button", onclick: () => { shown ? ui.shownLinks.delete(p.id) : ui.shownLinks.add(p.id); render(); } }, shown ? "Hide link" : "Show link"),
+        link.token ? h("button", { class: "btn small ghost", type: "button", onclick: () => copyText(linkFor(link.token), st, "Link copied.") }, "Copy link") : null,
+        link.token ? h("button", { class: "btn link", type: "button", onclick: () => { shown ? ui.shownLinks.delete(p.id) : ui.shownLinks.add(p.id); render(); } }, shown ? "Hide link" : "Show link") : null,
         p.id !== meId ? h("button", { class: "btn link", type: "button", onclick: () => act("setAdmin", { id: p.id, isAdmin: !link.isAdmin }) }, link.isAdmin ? "Remove organizer" : "Make organizer") : null,
         p.id !== meId ? h("button", { class: "btn link", type: "button", onclick: () => act("resetLink", { id: p.id }) }, "New link") : null,
         p.id !== meId ? h("button", { class: "btn link", type: "button", onclick: () => { ui.confirmRemove = p.id; render(); } }, "Remove") : null,
         st);
       const li = h("li", {}, avatar(p.id, p.name), h("span", { class: "nm" }, p.name + (p.id === meId ? " (you)" : "")),
         link.isAdmin ? h("span", { class: "chip" }, "Organizer") : null,
-        h("span", { class: "chip " + (p.hintCount === 3 ? "ok" : "warn") }, `${p.hintCount}/3 hints`),
+        h("span", { class: "chip " + (p.hintCount === 3 ? "ok" : "warn") }, `${p.hintCount}/3 wishes`),
         D.state.drawnAt && p.hintCount > 0 && !p.inDraw ? h("span", { class: "chip warn" }, "Not in draw") : null,
         acts,
-        shown ? h("div", { class: "linkbox" }, linkFor(link.token)) : null);
+        shown && link.token ? h("div", { class: "linkbox" }, linkFor(link.token)) : null);
       if (ui.confirmRemove === p.id) {
         li.append(h("div", { class: "confirm", style: "flex-basis:100%" },
-          h("p", {}, `Remove ${p.name}? Their hints and link stop working.` + (p.inDraw ? " They're in the draw, so you'll need to redraw names." : "")),
+          h("p", {}, `Remove ${p.name}? Their wishlist and link stop working.` + (p.inDraw ? " They're in the draw, so you'll need to redraw names." : "")),
           h("div", { class: "row" },
             h("button", { class: "btn", type: "button", onclick: async () => { ui.confirmRemove = null; await act("removePerson", { id: p.id }); } }, "Remove"),
             h("button", { class: "btn ghost", type: "button", onclick: () => { ui.confirmRemove = null; render(); } }, "Cancel"))));
@@ -574,50 +632,119 @@ textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
     const missed = ready.filter((p) => !p.inDraw);
     const incomplete = ready.filter((p) => p.hintCount < 3).length;
     let summary = drawnAt
-      ? `Drawn ${fmtDate(drawnAt)} for ${D.state.drawnCount} people. Each person now sees their receiver on the My Santa task tab.` + (missed.length ? ` ${missed.length} saved hints after the draw.` : "")
-      : `Everyone who has saved hints goes into the draw. Each person gets one receiver and nobody draws themselves.` + (daysUntil(HINTS_DUE) > 0 ? ` Hints are due 15 Nov.` : "");
+      ? `Drawn ${fmtDate(drawnAt)} for ${D.state.drawnCount} people. Everyone got a secret number, and each Santa now sees their receiver's number and wishlist on the My Santa task tab.` + (missed.length ? ` ${missed.length} saved a wishlist after the draw.` : "")
+      : `Everyone who has saved a wishlist goes into the draw. Each person gets a secret number and one receiver, and nobody draws themselves. Santas only see their receiver's number, never the name.` + (daysUntil(WISHLIST_DUE) > 0 ? ` Wishlists are due Wed 18 Nov, 11:59 PM.` : "");
     if (A.drawBroken) summary += " Someone in the draw was removed, so the draw needs to be redone.";
     $("#draw-summary").textContent = summary;
     if (ui.confirmDraw) {
       act$.append(h("div", { class: "confirm" },
         h("p", {}, drawnAt
-          ? `Redraw for ${ready.length} people? Everyone gets a new receiver. Anyone who already bought or hid a gift will need to start over.`
-          : `Draw names for ${ready.length} people?` + (incomplete ? ` ${incomplete} still have fewer than 3 hints.` : "") + " Everyone sees their receiver right away."),
+          ? `Redraw for ${ready.length} people? Everyone gets a new number and a new receiver. Anyone who already bought, labelled or hid a gift will need to start over.`
+          : `Draw names for ${ready.length} people?` + (incomplete ? ` ${incomplete} still have fewer than 3 wishes.` : "") + " Everyone sees their receiver's number right away."),
         h("div", { class: "row" },
           h("button", { class: "btn", type: "button", onclick: async () => { ui.confirmDraw = false; await act("draw"); } }, drawnAt ? "Yes, redraw" : "Yes, draw names"),
           h("button", { class: "btn ghost", type: "button", onclick: () => { ui.confirmDraw = false; render(); } }, "Cancel"))));
     } else {
       act$.append(h("div", { class: "row" },
         h("button", { class: "btn" + (drawnAt && !A.drawBroken ? " ghost" : ""), type: "button", disabled: ready.length < 2, onclick: () => { ui.confirmDraw = true; render(); } }, drawnAt ? "Redraw names" : "Draw names"),
-        ready.length < 2 ? h("span", { class: "status" }, "Needs at least 2 people with hints.") : null));
+        ready.length < 2 ? h("span", { class: "status" }, "Needs at least 2 people with a wishlist.") : null));
     }
 
-    // gifts
+    // gift readiness, by number. Names, clues and spots appear only if the server sends them (from hunt start).
+    $("#hide-intro").textContent = huntStarted()
+      ? "It's hunt day, so names, clues and exact spots are unlocked. They stay covered until you tap Show."
+      : "Each Santa writes clues and the exact spot. Before hunt day you only see gift numbers, so nothing is spoiled. Names, clues and spots unlock here on Wed 23 Dec.";
     const hl = $("#hide-list"); hl.replaceChildren();
-    const gifts = [...A.gifts].sort((a, b) => a.receiverName.localeCompare(b.receiverName));
-    const hiddenN = gifts.filter((g) => g.hidden).length;
-    $("#hide-summary").textContent = gifts.length ? `${hiddenN} of ${gifts.length} gifts hidden.` : "Hiding spots appear here after the draw.";
+    const gifts = [...(A.gifts || [])].sort((a, b) => (a.number || 0) - (b.number || 0));
+    const readyN = gifts.filter((g) => g.hasClues && g.hasSpot).length;
+    $("#hide-summary").textContent = gifts.length ? `${readyN} of ${gifts.length} Santas ready.` : "Gift readiness shows up here after the draw.";
     for (const g of gifts) {
-      const shown = ui.shownSpots.has(g.receiverId);
-      hl.append(h("li", {}, avatar(g.receiverId, g.receiverName), h("span", { class: "nm" }, "Gift for " + g.receiverName),
-        h("span", { class: "chip " + (g.hidden ? "ok" : "warn") }, g.hidden ? "Hidden" : "Not hidden yet"),
-        g.hidden ? h("button", { class: "btn small ghost", type: "button", onclick: () => { shown ? ui.shownSpots.delete(g.receiverId) : ui.shownSpots.add(g.receiverId); render(); } }, shown ? "Cover" : "Show") : null,
-        g.hidden && shown ? h("div", { class: "spot" }, g.spot) : null));
+      const key = String(g.number);
+      const hasName = typeof g.receiverName === "string" && g.receiverName;
+      const hasDetails = g.clues != null || g.spot != null;
+      const shown = ui.shownGifts.has(key);
+      hl.append(h("li", {},
+        h("span", { class: "numtag" }, "#" + g.number),
+        h("span", { class: "nm" }, hasName ? g.receiverName : `Gift #${g.number}`),
+        h("span", { class: "chip " + (g.hasClues ? "ok" : "warn") }, g.hasClues ? "Clues ✓" : "Clues ✗"),
+        h("span", { class: "chip " + (g.hasSpot ? "ok" : "warn") }, g.hasSpot ? "Spot ✓" : "Spot ✗"),
+        hasDetails ? h("button", { class: "btn small ghost", type: "button", onclick: () => { shown ? ui.shownGifts.delete(key) : ui.shownGifts.add(key); render(); } }, shown ? "Cover" : "Show") : null,
+        hasDetails && shown ? h("div", { class: "spot" },
+          h("b", {}, "Clues: "), g.clues || "None written.", h("br"),
+          h("b", {}, "Exact spot: "), g.spot || "Not given.") : null));
     }
 
-    // reveal
-    const ra = $("#reveal-actions"); ra.replaceChildren();
-    if (D.state.reveal) {
-      ra.append(h("div", { class: "row" }, h("span", { class: "chip ok" }, "Revealed to everyone"),
-        h("button", { class: "btn small ghost", type: "button", onclick: () => act("setReveal", { on: false }) }, "Hide reveal")));
-    } else if (ui.confirmReveal) {
-      ra.append(h("div", { class: "confirm" }, h("p", {}, "Show all Santa pairs to everyone now?"),
-        h("div", { class: "row" },
-          h("button", { class: "btn", type: "button", onclick: async () => { ui.confirmReveal = false; await act("setReveal", { on: true }); } }, "Reveal Santas"),
-          h("button", { class: "btn ghost", type: "button", onclick: () => { ui.confirmReveal = false; render(); } }, "Cancel"))));
+    // TV link
+    const tl = $("#tv-link"); tl.replaceChildren();
+    const tst = h("span", { class: "status" });
+    if (A.tvCode) {
+      const url = `${location.origin}/?tv=${encodeURIComponent(A.tvCode)}`;
+      tl.append(
+        h("div", { class: "row" }, h("span", { class: "chip ok" }, "TV link is on"),
+          h("button", { class: "btn small", type: "button", onclick: () => copyText(url, tst, "TV link copied. Open it on the office screen.") }, "Copy TV link"),
+          h("button", { class: "btn link", type: "button", onclick: () => act("setTv", { open: true }) }, "New TV link"),
+          h("button", { class: "btn link", type: "button", onclick: () => act("setTv", { open: false }) }, "Turn off"), tst),
+        h("div", { class: "linkbox" }, url));
     } else {
-      ra.append(h("button", { class: "btn gold", type: "button", disabled: !drawnAt, onclick: () => { ui.confirmReveal = true; render(); } }, "Reveal Santas…"));
+      tl.append(h("div", { class: "row" },
+        h("button", { class: "btn small ghost", type: "button", onclick: () => act("setTv", { open: true }) }, "Turn on TV link"),
+        h("span", { class: "status" }, "Off. No one can open the TV board.")));
     }
+  }
+
+  // ---------- TV board ----------
+  let tvData = null, tvBusy = false;
+  function tvError(title, text) {
+    $("#tv-error-title").textContent = title;
+    $("#tv-error-text").textContent = text;
+    $("#tv-error").hidden = false;
+    $("#tv-board").hidden = true;
+    setStatus($("#tv-status"), "");
+  }
+  function renderTv() {
+    const d = tvData || {};
+    const people = Array.isArray(d.people) ? d.people : [];
+    const total = Number.isFinite(d.total) ? d.total : people.length;
+    const found = Number.isFinite(d.foundCount) ? d.foundCount : people.filter((p) => p.found).length;
+    $("#tv-error").hidden = true;
+    $("#tv-board").hidden = false;
+    $("#tv-count").textContent = found;
+    $("#tv-of").textContent = `of ${total} gifts found`;
+    $("#tv-bar").style.width = total ? (found / total * 100) + "%" : "0%";
+    $("#tv-dinner").textContent = !total ? ""
+      : !d.huntStarted ? "The hunt starts Wed 23 Dec."
+      : found >= total ? "Everyone's found their gift. Dinner time!"
+      : `Dinner waits for the last ${total - found}.`;
+    const ul = $("#tv-people");
+    ul.replaceChildren(...(people.length ? people.map((p) =>
+      h("li", { class: p.found ? "found" : "" }, h("span", { class: "nm" }, p.name), h("span", { class: "st" }, p.found ? "Found it" : "Still looking")))
+      : [h("li", { style: "grid-column:1/-1" }, h("span", { class: "st" }, "No one's in yet."))]));
+    setStatus($("#tv-status"), `Updated ${new Date().toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}. Refreshes every 10 seconds.`);
+  }
+  async function tvLoad() {
+    if (tvBusy || document.hidden) return;
+    tvBusy = true;
+    try {
+      const r = await fetch("/api/rpc", { method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ action: "tv", code: TV }) });
+      let j; try { j = await r.json(); } catch { j = null; }
+      if (!r.ok && r.status < 500) { tvData = null; return tvError("This TV link isn't working", "It may have been turned off or replaced. Ask an organizer for the current TV link."); }
+      if (!r.ok || !j) throw new Error("server");
+      tvData = j; renderTv();
+    } catch {
+      if (tvData) setStatus($("#tv-status"), "Can't reach the server. Trying again…", "err");
+      else tvError("Can't reach the server", "Trying again in a few seconds.");
+    } finally { tvBusy = false; }
+  }
+  function bootTv() {
+    document.body.classList.add("tv");
+    document.title = "Hunt board · Secret Santa 2026";
+    $("#v-gate").hidden = true;
+    $("#tabs").hidden = true;
+    $("#v-tv").hidden = false;
+    tvLoad();
+    setInterval(tvLoad, 10000);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) tvLoad(); });
   }
 
   // ---------- forms ----------
@@ -627,7 +754,7 @@ textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
     const st = $("#wish-status");
     const hints = ["hint1", "hint2", "hint3"].map((id) => $("#" + id).value.trim());
     const flash = (msg, kind) => { st.dataset.flash = "1"; setStatus(st, msg, kind); setTimeout(() => { delete st.dataset.flash; }, 5000); };
-    if (hints.some((x) => !x)) return flash("Fill in all three hints so your Santa has enough to go on.", "err");
+    if (hints.some((x) => !x)) return flash("Fill in all three wishes so your Santa has enough to go on.", "err");
     $("#save-hints").disabled = true; setStatus(st, "Saving…");
     hintsDirty = false;
     if (!(await act("saveHints", { hints }, st))) hintsDirty = true;
@@ -647,7 +774,8 @@ textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
     }
   });
   $("#copy-all").addEventListener("click", () => {
-    const lines = D.people.map((p) => `${p.name}: ${linkFor(D.admin.links.find((l) => l.id === p.id).token)}`);
+    const links = (D.admin && D.admin.links) || [];
+    const lines = D.people.map((p) => { const l = links.find((x) => x.id === p.id); return l ? `${p.name}: ${linkFor(l.token)}` : null; }).filter(Boolean);
     copyText(lines.join("\n"), $("#add-status"), `Copied ${lines.length} links. Send each one privately.`);
   });
 
@@ -688,6 +816,8 @@ textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
   });
 
   // ---------- boot ----------
+  if (TV) { bootTv(); return; }
+  window.addEventListener("hashchange", showView);
   // Already joined on this device? Opening the group join link again just takes you to your own page.
   if (token && params.has("join")) {
     params.delete("join");
