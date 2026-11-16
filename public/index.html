@@ -148,7 +148,7 @@ body.tv .facts,body.tv .hello{display:none}
     <h1>Secret <em>Santa</em></h1>
     <div class="facts">
       <span>Wishlist due <b>Wed, 18 Nov</b></span>
-      <span>Gifts hidden by <b>Mon, 21 Dec</b></span>
+      <span>Gifts hidden <b>before the event starts</b></span>
       <span>Hunt <b>Wed, 23 Dec 2026</b></span>
       <span>Gift budget <b>RM50 and above</b></span>
       <span id="countdown"></span>
@@ -284,7 +284,7 @@ body.tv .facts,body.tv .hello{display:none}
       <div id="draw-actions" class="view"></div>
     </div>
     <div class="card">
-      <div><span class="eyebrow">Step 3 · by Mon 21 Dec</span><h2>Gift readiness</h2></div>
+      <div><span class="eyebrow">Step 3 · before the event starts</span><h2>Gift readiness</h2></div>
       <p class="muted" id="hide-intro"></p>
       <p class="status" id="hide-summary"></p>
       <ul class="list" id="hide-list"></ul>
@@ -503,7 +503,7 @@ body.tv .facts,body.tv .hello{display:none}
       h("ol", { class: "steps" },
         h("li", {}, "Buy a gift worth RM50 or more from their wishlist."),
         h("li", {}, ["Wrap it and label it ", h("b", {}, tag), ". No names."]),
-        h("li", {}, ["Hide it somewhere in the office by ", h("b", {}, "Mon 21 Dec, 11:59 PM"), "."]),
+        h("li", {}, ["Hide it somewhere in the office ", h("b", {}, "before the event starts"), "."]),
         h("li", {}, "Write clues to help them find it, and tell the organizers the exact spot, below."))));
 
     const clues = h("textarea", { id: "clues", maxlength: "600", placeholder: "e.g. Where the coffee is strongest, look up high behind something blue." });
@@ -512,7 +512,7 @@ body.tv .facts,body.tv .hello{display:none}
     spot.value = hideDirty ? kept.spot : (D.myHide ? D.myHide.spot || "" : "");
     clues.addEventListener("input", () => { hideDirty = true; });
     spot.addEventListener("input", () => { hideDirty = true; });
-    const st = h("span", { class: "status" + (D.myHide ? " ok" : "") }, D.myHide ? `Saved ${fmtDate(D.myHide.at)}.` : "Due Mon 21 Dec, 11:59 PM.");
+    const st = h("span", { class: "status" + (D.myHide ? " ok" : "") }, D.myHide ? `Saved ${fmtDate(D.myHide.at)}.` : "Due before the event starts.");
     const btn = h("button", { class: "btn", type: "submit" }, D.myHide ? "Update clues and spot" : "Save clues and spot");
     const form = h("form", { class: "view", novalidate: true, onsubmit: async (e) => {
       e.preventDefault();

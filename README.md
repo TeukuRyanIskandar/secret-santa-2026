@@ -8,7 +8,7 @@ organizer adds everyone's name and sends each person a private link.
 - **Numbers**: the draw (Thu 19 Nov) gives everyone a random gift number. Your Santa sees
   "#N + wishlist"; you see "You are #M", so on hunt day you look for the gift labelled #M.
 - **My Santa task**: buy a gift (RM50+), label it with your receiver's number, hide it in the
-  office by Mon 21 Dec, and write clues for them plus the exact spot (organizers only).
+  office before the event starts, and write clues for them plus the exact spot (organizers only).
 - **Hunt day** (Wed 23 Dec): clues unlock at 00:00 MYT. Live board of names and "Found it".
   Dinner waits for the last gift.
 - **TV board**: `/?tv=CODE`, a read-only board for a shared screen (names and found only).
