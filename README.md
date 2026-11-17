@@ -3,9 +3,9 @@
 Gift exchange app for the Christmas Event 2026 (Wed, 23 Dec). Nobody needs an account: the
 organizer adds everyone's name and sends each person a private link.
 
-- **My wishlist**: everyone writes three wishlist items by Wed 18 Nov, 11:59 PM. Only their
+- **My wishlist**: everyone writes three wishlist items by Sun 22 Nov, 11:59 PM. Only their
   Santa sees them, and only next to a number, never a name.
-- **Numbers**: the draw (Thu 19 Nov) gives everyone a random gift number. Your Santa sees
+- **Numbers**: the draw (Mon 23 Nov) gives everyone a random gift number. Your Santa sees
   "#N + wishlist"; you see "You are #M", so on hunt day you look for the gift labelled #M.
 - **My Santa task**: buy a gift (RM50+), label it with your receiver's number, hide it in the
   office before the event starts, and write clues for them plus the exact spot (organizers only).

@@ -147,7 +147,7 @@ body.tv .facts,body.tv .hello{display:none}
     <span class="eyebrow">Christmas Event 2026 · Hunt</span>
     <h1>Secret <em>Santa</em></h1>
     <div class="facts">
-      <span>Wishlist due <b>Wed, 18 Nov</b></span>
+      <span>Wishlist due <b>Sun, 22 Nov</b></span>
       <span>Gifts hidden <b>before the event starts</b></span>
       <span>Hunt <b>Wed, 23 Dec 2026</b></span>
       <span>Gift budget <b>RM50 and above</b></span>
@@ -201,7 +201,7 @@ body.tv .facts,body.tv .hello{display:none}
         <span class="eyebrow">Before the event</span>
         <h2>Your three-item wishlist</h2>
       </div>
-      <p class="muted">List three things you'd like. Your Secret Santa picks a gift from them. Saving your wishlist puts you in the draw. Please save it by <b>Wed 18 Nov, 11:59 PM</b>.</p>
+      <p class="muted">List three things you'd like. Your Secret Santa picks a gift from them. Saving your wishlist puts you in the draw. Please save it by <b>Sun 22 Nov, 11:59 PM</b>.</p>
       <p><b>Your Santa will see your number, not your name.</b></p>
       <form id="wish-form" class="view" novalidate>
         <div class="field"><span class="num">1</span><div><label for="hint1">Wish 1</label><textarea id="hint1" maxlength="280" placeholder="e.g. A nice tea set for my desk"></textarea></div></div>
@@ -300,7 +300,7 @@ body.tv .facts,body.tv .hello{display:none}
 <script>
 (() => {
   // Display-only dates (Malaysia time). The server decides when clues unlock.
-  const WISHLIST_DUE = new Date("2026-11-18T23:59:00+08:00");
+  const WISHLIST_DUE = new Date("2026-11-22T23:59:00+08:00");
   const GIFTS_DUE = new Date("2026-12-21T23:59:00+08:00");
   const EVENT_DAY = new Date("2026-12-23T18:00:00+08:00");
   const VIEWS = ["wishlist", "santa", "hunt", "organizer"];
@@ -479,8 +479,8 @@ body.tv .facts,body.tv .hello{display:none}
     if (!D.myDraw) {
       box.append(h("div", { class: "card" }, h("div", { class: "empty" },
         h("h3", {}, "Names haven't been drawn yet"),
-        h("p", {}, myHints ? "You're in. Names are drawn on Thu 19 Nov. After that, your receiver's number and wishlist show up here."
-          : "Save your wishlist first so you're in the draw. It's due Wed 18 Nov, 11:59 PM."),
+        h("p", {}, myHints ? "You're in. Names are drawn on Mon 23 Nov. After that, your receiver's number and wishlist show up here."
+          : "Save your wishlist first so you're in the draw. It's due Sun 22 Nov, 11:59 PM."),
         !myHints ? h("button", { class: "btn", type: "button", onclick: () => { location.hash = "wishlist"; showView(); } }, "Write my wishlist") : null)));
       return;
     }
@@ -537,7 +537,7 @@ body.tv .facts,body.tv .hello{display:none}
     if (mine == null) {
       card.append(h("p", {}, D.state.drawnAt
         ? "You're not in the current draw, so there's no gift labelled for you yet. Ask an organizer."
-        : "You'll get your number when names are drawn on Thu 19 Nov."));
+        : "You'll get your number when names are drawn on Mon 23 Nov."));
     } else {
       card.append(h("div", {}, h("span", { class: "mynum" }, `You are #${mine}`)),
         h("p", { class: "muted" }, `Look for the gift labelled #${mine}.`));
@@ -633,7 +633,7 @@ body.tv .facts,body.tv .hello{display:none}
     const incomplete = ready.filter((p) => p.hintCount < 3).length;
     let summary = drawnAt
       ? `Drawn ${fmtDate(drawnAt)} for ${D.state.drawnCount} people. Everyone got a secret number, and each Santa now sees their receiver's number and wishlist on the My Santa task tab.` + (missed.length ? ` ${missed.length} saved a wishlist after the draw.` : "")
-      : `Everyone who has saved a wishlist goes into the draw. Each person gets a secret number and one receiver, and nobody draws themselves. Santas only see their receiver's number, never the name.` + (daysUntil(WISHLIST_DUE) > 0 ? ` Wishlists are due Wed 18 Nov, 11:59 PM.` : "");
+      : `Everyone who has saved a wishlist goes into the draw. Each person gets a secret number and one receiver, and nobody draws themselves. Santas only see their receiver's number, never the name.` + (daysUntil(WISHLIST_DUE) > 0 ? ` Wishlists are due Sun 22 Nov, 11:59 PM.` : "");
     if (A.drawBroken) summary += " Someone in the draw was removed, so the draw needs to be redone.";
     $("#draw-summary").textContent = summary;
     if (ui.confirmDraw) {
