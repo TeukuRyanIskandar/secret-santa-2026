@@ -91,6 +91,10 @@ textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 
 .hints li::before{content:counter(h);font-family:var(--display);font-style:italic;color:var(--gold);font-size:20px;line-height:1.2}
 .steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
 .chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;background:var(--gold-soft);color:var(--ink);border:1px solid var(--line);white-space:nowrap}
+button.chip{cursor:pointer;font-family:inherit}
+.org-wishes{flex-basis:100%;margin:4px 0 0;gap:6px}
+.org-wishes li{background:var(--bg);border-color:var(--line);padding:8px 12px}
+.org-wishes li::before{font-size:16px}
 .chip.ok{background:var(--ok-soft);color:var(--ok)}
 .chip.warn{background:var(--berry-soft);color:var(--berry)}
 
@@ -310,7 +314,7 @@ body.tv .facts,body.tv .hello{display:none}
 
   let token = null, D = null; // D = latest snapshot from the server
   let hintsDirty = false, hideDirty = false, busy = false;
-  const ui = { confirmDraw: false, confirmRemove: null, shownGifts: new Set(), shownLinks: new Set() };
+  const ui = { confirmDraw: false, confirmRemove: null, shownGifts: new Set(), shownLinks: new Set(), shownWishes: new Set() };
 
   // ---------- token handling ----------
   const store = {
@@ -612,10 +616,15 @@ body.tv .facts,body.tv .hello{display:none}
         st);
       const li = h("li", {}, avatar(p.id, p.name), h("span", { class: "nm" }, p.name + (p.id === meId ? " (you)" : "")),
         link.isAdmin ? h("span", { class: "chip" }, "Organizer") : null,
-        h("span", { class: "chip " + (p.hintCount === 3 ? "ok" : "warn") }, `${p.hintCount}/3 wishes`),
+        p.hintCount > 0
+          ? h("button", { class: "chip " + (p.hintCount === 3 ? "ok" : "warn"), type: "button", title: "Show wishes", "aria-expanded": String(ui.shownWishes.has(p.id)), onclick: () => { ui.shownWishes.has(p.id) ? ui.shownWishes.delete(p.id) : ui.shownWishes.add(p.id); render(); } }, `${p.hintCount}/3 wishes ${ui.shownWishes.has(p.id) ? "▴" : "▾"}`)
+          : h("span", { class: "chip warn" }, "0/3 wishes"),
         D.state.drawnAt && p.hintCount > 0 && !p.inDraw ? h("span", { class: "chip warn" }, "Not in draw") : null,
         acts,
-        shown && link.token ? h("div", { class: "linkbox" }, linkFor(link.token)) : null);
+        shown && link.token ? h("div", { class: "linkbox" }, linkFor(link.token)) : null,
+        ui.shownWishes.has(p.id) && p.hintCount > 0
+          ? h("ol", { class: "hints org-wishes" }, (link.hints || []).filter(Boolean).map((t) => h("li", {}, t)))
+          : null);
       if (ui.confirmRemove === p.id) {
         li.append(h("div", { class: "confirm", style: "flex-basis:100%" },
           h("p", {}, `Remove ${p.name}? Their wishlist and link stop working.` + (p.inDraw ? " They're in the draw, so you'll need to redraw names." : "")),

@@ -114,8 +114,8 @@ test("full flow: wishlist, draw, numbers, privacy before the hunt", async () => 
       assert.deepEqual(Object.keys(p).sort(), ["found", "hintCount", "id", "inDraw", "name"]);
       assert.equal(p.inDraw, true);
     }
-    // Only my wishlist and my receiver's are visible.
-    const json = JSON.stringify(v);
+    // Only my wishlist and my receiver's are visible (organizers also see everyone's in admin.links).
+    const json = JSON.stringify({ ...v, admin: undefined });
     for (const other of everyone) {
       if (other === n || other === r) continue;
       assert.ok(!json.includes(hints3(other)[0]), `${n} can see ${other}'s wishlist`);
@@ -127,6 +127,8 @@ test("full flow: wishlist, draw, numbers, privacy before the hunt", async () => 
 
   // Organizer before the hunt: readiness by number only, no names, no ids.
   const org = views.Ryan.admin;
+  // Organizers can read every wishlist by name, to keep wishes safe and friendly.
+  for (const n of everyone) assert.deepEqual(org.links.find((l) => l.id === views[n].me.id).hints, hints3(n));
   assert.deepEqual(org.gifts.map((g) => g.number), range, "sorted by number");
   for (const g of org.gifts) assert.deepEqual(Object.keys(g).sort(), ["hasClues", "hasSpot", "number"]);
   const giftsJson = JSON.stringify(org.gifts);
@@ -134,7 +136,7 @@ test("full flow: wishlist, draw, numbers, privacy before the hunt", async () => 
     assert.ok(!giftsJson.includes(views[n].me.id), "organizer gifts leak an id");
     assert.ok(!giftsJson.includes(n), "organizer gifts leak a name");
   }
-  for (const l of org.links) assert.deepEqual(Object.keys(l).sort(), ["id", "isAdmin", "token"]);
+  for (const l of org.links) assert.deepEqual(Object.keys(l).sort(), ["hints", "id", "isAdmin", "token"]);
 });
 
 test("hiding, clues unlock on hunt day, organizers see names only from hunt start", async () => {
