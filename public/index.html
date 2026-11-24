@@ -152,8 +152,8 @@ body.tv .facts,body.tv .hello{display:none}
     <h1>Secret <em>Santa</em></h1>
     <div class="facts">
       <span>Wishlist due <b>Sun, 22 Nov</b></span>
-      <span>Gifts hidden <b>before the event starts</b></span>
-      <span>Hunt <b>Wed, 23 Dec 2026</b></span>
+      <span>Gifts prepared by <b>Fri, 18 Dec</b></span>
+      <span>Gifts hidden and hunt <b>Wed, 23 Dec 2026</b></span>
       <span>Gift budget <b>RM50 and above</b></span>
       <span id="countdown"></span>
     </div>
@@ -305,7 +305,7 @@ body.tv .facts,body.tv .hello{display:none}
 (() => {
   // Display-only dates (Malaysia time). The server decides when clues unlock.
   const WISHLIST_DUE = new Date("2026-11-22T23:59:00+08:00");
-  const GIFTS_DUE = new Date("2026-12-21T23:59:00+08:00");
+  const GIFTS_DUE = new Date("2026-12-18T23:59:00+08:00");
   const EVENT_DAY = new Date("2026-12-23T18:00:00+08:00");
   const VIEWS = ["wishlist", "santa", "hunt", "organizer"];
   const TOKEN_KEY = "santa2026.token";
@@ -444,7 +444,7 @@ body.tv .facts,body.tv .hello{display:none}
     const dEvent = daysUntil(EVENT_DAY), dWish = daysUntil(WISHLIST_DUE), dGifts = daysUntil(GIFTS_DUE);
     let t = "";
     if (dWish > 0 && !(D && D.state.drawnAt)) t = `Wishlists close in ${plural(dWish, "day")}`;
-    else if (D && D.myDraw && !D.myHide && dGifts > 0) t = `Gift and clues due in ${plural(dGifts, "day")}`;
+    else if (D && D.myDraw && !D.myHide && dGifts > 0) t = `Gift due in ${plural(dGifts, "day")}`;
     else if (dEvent > 0) t = `${plural(dEvent, "day")} to go`;
     else if (dEvent === 0) t = "Today's the day";
     $("#countdown").textContent = t;
@@ -505,7 +505,7 @@ body.tv .facts,body.tv .hello{display:none}
     box.append(h("div", { class: "card" },
       h("h3", {}, "Your to-do"),
       h("ol", { class: "steps" },
-        h("li", {}, "Buy a gift worth RM50 or more from their wishlist."),
+        h("li", {}, ["Buy a gift worth RM50 or more from their wishlist, ", h("b", {}, "ready by Fri, 18 Dec"), "."]),
         h("li", {}, ["Wrap it and label it ", h("b", {}, tag), ". No names."]),
         h("li", {}, ["Hide it somewhere in the office ", h("b", {}, "before the event starts"), "."]),
         h("li", {}, "Write clues to help them find it, and tell the organizers the exact spot, below."))));
